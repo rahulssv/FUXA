@@ -1,6 +1,11 @@
-FROM ppc64le/node:21-alpine3.18
+FROM ppc64le/node:21-bullseye
 
 # Create app directory
+RUN apt-get update && apt-get install -y sqlite3 libsqlite3-dev git && \
+    apt-get autoremove -yqq --purge && \
+    apt-get clean  && \
+    rm -rf /var/lib/apt/lists/*
+    
 WORKDIR /usr/src/app
 
 RUN git clone https://github.com/frangoteam/FUXA.git
@@ -11,11 +16,8 @@ WORKDIR /usr/src/app/FUXA/server
 RUN npm install
 
 # Workaround for sqlite3 https://stackoverflow.com/questions/71894884/sqlite3-err-dlopen-failed-version-glibc-2-29-not-found
-RUN apt-get update && apt-get install -y sqlite3 libsqlite3-dev && \
-    apt-get autoremove -yqq --purge && \
-    apt-get clean  && \
-    rm -rf /var/lib/apt/lists/*  && \
-    npm install --build-from-source --sqlite=/usr/bin sqlite3
+
+RUN npm install --build-from-source --sqlite=/usr/bin sqlite3
 
 ADD . /usr/src/app/FUXA
 
