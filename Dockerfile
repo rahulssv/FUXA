@@ -1,4 +1,4 @@
-FROM node:14
+FROM ppc64le/node:21-alpine3.18
 
 # Create app directory
 WORKDIR /usr/src/app
